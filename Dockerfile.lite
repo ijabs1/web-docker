@@ -1,0 +1,20 @@
+# Stage 1: Build the Application
+FROM php:8.2-cli AS builder
+
+WORKDIR /app
+
+# Install the MySQL extension
+RUN docker-php-ext-install mysqli
+
+COPY src /app
+
+# Stage 2: Create a Smaller Image
+FROM php:8.2-cli-alpine AS build-release-stage
+
+WORKDIR /app
+
+COPY --from=builder /app .
+
+EXPOSE 8082
+
+CMD ["php", "-S", "0.0.0.0:8082", "-t", "/app"]
