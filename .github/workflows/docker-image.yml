@@ -1,0 +1,29 @@
+name: PHP Docker MySQL CI/CD
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name : Configure Docker
+      uses: actions/checkout@v3
+
+    - name: Get current version number
+      id: get_version
+      run: echo "::set-output name=version::V$(( $(echo ${{ github.event_name }} | tr -cd '0-9' ) + 1 ))"
+
+    - name: Build Docker image with custom tag
+      run: docker build . --file Dockerfile --tag new_image:V${{ steps.get_version.outputs.version }}
+
+
+
+
+
